@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
+/* ===== Barra (layout RN) ===== */
+.rn-search-wrapper{
+  --bg:#f0ebf5; --blue:#0d2240; --blue-hover:#1c3b68; --orange:#EA932A; --radius:40px;
+  position:relative; display:flex; align-items:center; gap:16px;
+  background:var(--bg); border-radius:var(--radius); padding:12px 16px;
+  font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; font-weight:500;
+}
+.rn-search-wrapper input,
+.rn-search-wrapper select{
+  background:transparent; font-size:16px; color:#0f172a; padding:10px 12px;
+  outline:none!important; border:none!important; box-shadow:none!important;
+}
+
+/* Proporções: search cresce, selects menores */
+.rn-search-wrapper .rn-search{ flex:2; min-width:220px; }
+.rn-search-wrapper .rn-localizacao,
+.rn-search-wrapper .rn-status { flex:1; min-width:160px; cursor:pointer; }
+
+/* Botão-lupa (chip) */
+.rn-search-btn{
+  display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; margin-left:8px;
+  background:var(--blue); border:none; border-radius:12px; cursor:pointer; transition:background .18s ease;
+}
+.rn-search-btn:hover{ background:var(--blue-hover); }
+.rn-search-btn svg{ width:22px; height:22px; display:block; }
+.rn-search-btn svg path{ fill:var(--orange); }
+
+/* Autocomplete */
+.rn-autocomplete{
+  position:absolute; left:16px; right:72px; top:calc(100% + 6px);
+  display:none; list-style:none; margin:0; padding:8px 0; background:#fff;
+  border:1px solid #e2e8f0; border-radius:12px; box-shadow:0 6px 20px rgba(2,6,23,.08);
+  max-height:280px; overflow:auto; z-index:50;
+}
+.rn-autocomplete li{ padding:10px 12px; cursor:pointer; font-size:15px; }
+.rn-autocomplete li:hover{ background:#f1f5f9; }
+
+/* Responsivo */
+@media (max-width:640px){
+  .rn-search-wrapper{ flex-wrap:wrap; gap:10px; }
+  .rn-search-wrapper .rn-search,
+  .rn-search-wrapper .rn-localizacao,
+  .rn-search-wrapper .rn-status { flex:1 1 100%; }
+  .rn-search-btn{ order:99; margin:8px auto 0; }
+  .rn-autocomplete{ left:12px; right:12px; }
+}

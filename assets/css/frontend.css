@@ -1,0 +1,173 @@
+/* Hero básico */
+.imo-hero {
+  position: relative;
+  padding: 72px 20px;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+}
+.imo-hero::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.35));
+}
+.imo-hero__inner { position: relative; z-index: 2; max-width: 1140px; margin: 0 auto; }
+.imo-hero__title { font-size: clamp(28px, 3vw, 44px); margin: 0 0 8px; }
+.imo-hero__subtitle { font-size: clamp(16px, 2vw, 20px); margin: 0; }
+
+/* CTA */
+.imo-cta { text-align: left; }
+.imo-cta__btn {
+  display: inline-block;
+  padding: 12px 20px;
+  background: #0a66ff;
+  color: #fff; text-decoration: none;
+  border-radius: 8px;
+}
+.imo-cta__btn:hover { filter: brightness(0.95); }
+
+/* ===================================================================== */
+/* Imo Filters — GRID 12 col (versão única, sem FLEX)                     */
+/* ===================================================================== */
+
+.imo-filters {
+  display: block;
+  background: #efe7f6;   /* pode ser alterado no widget */
+  border-radius: 24px;   /* pode ser alterado no widget */
+  padding: 16px 24px;    /* pode ser alterado no widget */
+}
+
+/* Linha em GRID */
+.imo-filters__row {
+  display: grid !important;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 20px; /* controlado pelo widget */
+}
+
+/* Colunas por device */
+.imo-col { min-width: 0; }
+.imo-col.d-3  { grid-column: span 3 / span 3; }
+.imo-col.d-4  { grid-column: span 4 / span 4; }
+.imo-col.d-6  { grid-column: span 6 / span 6; }
+.imo-col.d-12 { grid-column: span 12 / span 12; }
+
+@media (max-width: 1024px) {
+  .imo-col.t-3  { grid-column: span 3 / span 3; }
+  .imo-col.t-4  { grid-column: span 4 / span 4; }
+  .imo-col.t-6  { grid-column: span 6 / span 6; }
+  .imo-col.t-12 { grid-column: span 12 / span 12; }
+}
+@media (max-width: 767px) {
+  .imo-col.m-3  { grid-column: span 3 / span 3; }
+  .imo-col.m-4  { grid-column: span 4 / span 4; }
+  .imo-col.m-6  { grid-column: span 6 / span 6; }
+  .imo-col.m-12 { grid-column: span 12 / span 12; }
+}
+
+/* Itens */
+.imo-filters__item { position: relative; }
+.imo-filters__item--submit { justify-self: end; } /* botão alinha à direita da célula */
+
+/* Inputs/Selects — visuais (cores/raios/alturas são controlados no widget) */
+.imo-filters__input,
+.imo-filters__select {
+  width: 100%;
+  height: 48px;
+  background: #f5effb;
+  color: #102D4E;
+  border: 0;
+  border-radius: 20px;
+  padding: 0 16px;
+  outline: none;
+}
+
+/* Select com chevron */
+.imo-select { position: relative; }
+.imo-select__chevron {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  color: #102D4E; opacity: .65; pointer-events: none;
+}
+
+/* Search com ícone interno */
+.imo-search { position: relative; }
+.imo-icon {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  color: #102D4E; opacity: .65; display: inline-flex;
+}
+.imo-search.inside_left  .imo-icon { left: 14px; }
+.imo-search.inside_right .imo-icon { right: 14px; }
+.imo-search.inside_left  .imo-filters__input { padding-left: 48px; }
+.imo-search.inside_right .imo-filters__input { padding-right: 48px; }
+
+/* Botão enviar (campo separado) */
+.imo-filters__submit {
+  height: 48px; padding: 0 18px;
+  background: #102D4E; color: #fff; border: 0; border-radius: 20px;
+  font-weight: 600; cursor: pointer;
+}
+.imo-filters__submit:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* Botão-ícone “fora do input”, quando usar search=outside_btn */
+.imo-btn-icon {
+  width: 48px; height: 48px; margin-left: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #102D4E; color: #fff; border: 0; border-radius: 20px; cursor: pointer;
+}
+
+/* Link limpar */
+.imo-filters__clear { display: inline-block; line-height: 48px; color: #102D4E; opacity: .8; text-decoration: underline; }
+
+/* Presets extras (básicos) */
+.preset-pill.imo-filters { /* já coberto pelos controles do widget; mantido por compat */ }
+.preset-clean .imo-filters { background:#fff; border:1px solid #E5E7EB; }
+.preset-header .imo-filters { background:transparent; padding:0; }
+
+/* ===== Percent Grid (100 col) para larguras exatas por campo ===== */
+.imo-filters__row.percent-grid {
+  display: grid !important;
+  grid-template-columns: repeat(100, minmax(0, 1fr));
+}
+
+/* Cada item lê --pct-* (1–100). Default = 100 */
+.imo-filters__row.percent-grid .imo-col {
+  grid-column: span var(--pct-d, 100) / span var(--pct-d, 100);
+}
+@media (max-width: 1024px) {
+  .imo-filters__row.percent-grid .imo-col {
+    grid-column: span var(--pct-t, 100) / span var(--pct-t, 100);
+  }
+}
+@media (max-width: 767px) {
+  .imo-filters__row.percent-grid .imo-col {
+    grid-column: span var(--pct-m, 100) / span var(--pct-m, 100);
+  }
+}
+
+/* Botão alinhado à direita da sua célula */
+.imo-filters__item--submit { justify-self: end; }
+
+/* Chip da lupa (quando search.icon_mode = outside_btn) já usa .imo-btn-icon */
+
+/* === Percent Grid (usa vars --pct-d/--pct-t/--pct-m do widget) === */
+.imo-filters__row.percent-grid {
+  display: grid;
+  grid-template-columns: repeat(100, minmax(0, 1fr));
+}
+
+.imo-filters__row.percent-grid .imo-col {
+  /* Desktop */
+  grid-column: span var(--pct-d, 100) / span var(--pct-d, 100);
+}
+
+@media (max-width: 1024px) {
+  .imo-filters__row.percent-grid .imo-col {
+    /* Tablet */
+    grid-column: span var(--pct-t, 100) / span var(--pct-t, 100);
+  }
+}
+@media (max-width: 767px) {
+  .imo-filters__row.percent-grid .imo-col {
+    /* Mobile */
+    grid-column: span var(--pct-m, 100) / span var(--pct-m, 100);
+  }
+}

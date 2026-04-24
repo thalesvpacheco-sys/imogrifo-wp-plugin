@@ -1,0 +1,57 @@
+# ===== Sistema operacional =====
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# ===== Editor / IDE =====
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ===== Dependências =====
+node_modules/
+vendor/
+composer.lock
+package-lock.json
+yarn.lock
+
+# ===== Build / dist =====
+build/
+dist/
+*.min.js.map
+*.min.css.map
+
+# ===== Logs e cache =====
+*.log
+error_log
+debug.log
+.cache/
+npm-debug.log*
+
+# ===== WordPress específico =====
+wp-config.php
+.htaccess
+uploads/
+
+# ===== Backup e temporários =====
+*.bak
+*.backup
+*.old
+*.tmp
+~$*
+
+# ===== Configurações locais =====
+.env
+.env.local
+.env.*.local
+
+# ===== PHP =====
+*.phar
+.phpunit.result.cache
+
+# ===== Arquivos do plugin que não vão pro repo =====
+*.zip
+languages/*.mo
