@@ -1,5 +1,5 @@
 === Imo Grifo — Empreendimentos (MVP) ===
-Contributors: grifoagency
+Contributors: thales pacheco
 Requires PHP: 8.1
 Requires at least: 6.2
 Tested up to: 6.6
