@@ -13,6 +13,7 @@ if (! defined('ABSPATH')) { exit; }
 if (! defined('IMOGRIFO_FILE')) { define('IMOGRIFO_FILE', __FILE__); }
 if (! defined('IMOGRIFO_PATH')) { define('IMOGRIFO_PATH', plugin_dir_path(__FILE__)); }
 if (! defined('IMOGRIFO_URL'))  { define('IMOGRIFO_URL',  plugin_dir_url(__FILE__)); }
+if (! defined('IMOGRIFO_VER'))  { define('IMOGRIFO_VER',  '0.3.1'); }
 
 // Carregar núcleo
 $core = IMOGRIFO_PATH . 'includes/Plugin.php';
