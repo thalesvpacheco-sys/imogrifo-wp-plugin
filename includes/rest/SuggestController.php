@@ -28,10 +28,17 @@ final class SuggestController {
                 'fields'         => 'ids',
             ]);
 
+            $status_tax = taxonomy_exists('status_obra') ? 'status_obra' : 'status';
+
             foreach ( $q->posts as $pid ) {
+                $cidade_terms = get_the_terms($pid, 'cidade');
+                $status_terms = get_the_terms($pid, $status_tax);
+
                 $out[] = [
-                    'label' => get_the_title($pid),
-                    'link'  => get_permalink($pid),
+                    'label'  => get_the_title($pid),
+                    'link'   => get_permalink($pid),
+                    'cidade' => (!is_wp_error($cidade_terms) && $cidade_terms) ? reset($cidade_terms)->name : '',
+                    'status' => (!is_wp_error($status_terms) && $status_terms) ? reset($status_terms)->name : '',
                 ];
             }
             wp_reset_postdata();

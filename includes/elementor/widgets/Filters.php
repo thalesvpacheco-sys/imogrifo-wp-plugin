@@ -68,6 +68,9 @@ final class Filters extends Widget_Base
     }
 
     public function render() {
+        // Garante enqueue explícito — get_script_depends() pode não enfileirar
+        // quando o Elementor "Improved Asset Loading" está ativo
+        wp_enqueue_script('imo-filters-js');
         // Localiza script (ajax/nonce)
         wp_localize_script('imo-filters-js', 'imoFilters', [
             'ajaxurl' => admin_url('admin-ajax.php'),
@@ -95,7 +98,7 @@ final class Filters extends Widget_Base
         echo '<div class="rn-search-wrapper imo-rn-filter" data-scope="1">';
 
         // Search
-        echo '<input type="text" class="rn-search" name="q" value="'. esc_attr($q_val) .'" placeholder="'. esc_attr($s['placeholder']) .'" aria-label="'. esc_attr__('Buscar por nome do empreendimento', 'imo-grifo') .'">';
+        echo '<input type="text" class="rn-search" name="q" autocomplete="off" value="'. esc_attr($q_val) .'" placeholder="'. esc_attr($s['placeholder']) .'" aria-label="'. esc_attr__('Buscar por nome do empreendimento', 'imo-grifo') .'">';
 
         // Cidade
         if ( $s['show_cidade'] === 'yes' ) {
