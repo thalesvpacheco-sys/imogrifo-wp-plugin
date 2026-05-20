@@ -6,10 +6,11 @@ use Elementor\Modules\DynamicTags\Module;
 
 if (! defined('ABSPATH')) { exit; }
 
+/** @deprecated since 0.4.0 — ligado ao widget FormCTA depreciado (DR-11). Remover na F2-05. */
 final class TagMetaCTALabel extends Tag
 {
     public function get_name(){ return 'imo-meta-cta-label'; }
-    public function get_title(){ return __('Imo: CTA Label', 'imo-grifo'); }
+    public function get_title(){ return __('Imo: CTA Label [deprecated]', 'imo-grifo'); }
     public function get_group(){ return 'post'; }
     public function get_categories()
     {

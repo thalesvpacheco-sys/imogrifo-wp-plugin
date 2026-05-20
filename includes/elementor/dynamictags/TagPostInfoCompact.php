@@ -7,10 +7,11 @@ use Elementor\Modules\DynamicTags\Module as DynamicModule;
 
 if (! defined('ABSPATH')) { exit; }
 
+/** @deprecated since 0.4.0 — duplica Post Info nativo do Elementor Pro (DR-08). Remover na Fase 2. */
 final class TagPostInfoCompact extends Tag
 {
     public function get_name() { return 'imo-post-info-compact'; }
-    public function get_title(){ return __('Imo: Info (Cidade/Estado/Status/Tipo)', 'imo-grifo'); }
+    public function get_title(){ return __('Imo: Info (Cidade/Estado/Status/Tipo) [deprecated]', 'imo-grifo'); }
     public function get_group(){ return 'post'; }
     public function get_categories()
     {
