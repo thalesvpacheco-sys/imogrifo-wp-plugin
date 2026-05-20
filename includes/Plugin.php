@@ -57,6 +57,15 @@ final class Plugin
             }
         }, 20);
 
+        // Autocomplete AJAX
+        $sc = IMOGRIFO_PATH . 'includes/rest/SuggestController.php';
+        if (is_readable($sc)) {
+            require_once $sc;
+            if (class_exists('\ImoGrifo\Rest\SuggestController')) {
+                \ImoGrifo\Rest\SuggestController::boot();
+            }
+        }
+
         // Elementor: suporte
         $this->ensure_elementor_support();
 
