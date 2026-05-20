@@ -1,5 +1,5 @@
 <?php
-namespace ImoGrifo\Elementor\DynamicTags;
+namespace ImoGrifo\DynamicTags;
 
 use Elementor\Core\DynamicTags\Tag;
 use Elementor\Controls_Manager;
