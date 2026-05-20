@@ -34,7 +34,7 @@ final class Bootstrap
     public static function register_widgets($widgets_manager): void
     {
         // Filtros (Archive)
-        $file = IMOGRIFO_PATH . 'includes/Elementor/Widgets/Filters.php';
+        $file = IMOGRIFO_PATH . 'includes/elementor/widgets/Filters.php';
         if (is_readable($file)) {
             require_once $file;
             $widgets_manager->register(new \ImoGrifo\Elementor\Widgets\Filters());
