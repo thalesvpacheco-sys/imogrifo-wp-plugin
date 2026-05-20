@@ -182,14 +182,14 @@ Essa parte fazemos juntos no terminal antes de ligar o Claude Code em qualquer t
 
 ---
 
-### F1-09 — Depreciar `TagPostTerms` e `TagPostInfoCompact`
+### F1-09 — Depreciar `TagPostTerms`, `TagPostInfoCompact`, `TagMetaCTALabel` e `TagMetaCTAUrl`
 
-**Problema:** Essas duas tags duplicam funcionalidade que o Post Info nativo do Elementor Pro já oferece. Ver DR-08.
+**Problema:** `TagPostTerms` e `TagPostInfoCompact` duplicam funcionalidade que o Post Info nativo do Elementor Pro já oferece (DR-08). `TagMetaCTALabel` e `TagMetaCTAUrl` estão ligadas aos widgets Hero e FormCTA, depreciados em DR-11 — devem ser marcadas agora para remoção efetiva em F2-05.
 
 **Ação:**
 - Adicionar comentário `@deprecated since 0.4.0` no docblock de cada classe
 - Mudar o título exibido no Elementor para incluir `(deprecated)` — ex: `Imo: Post Terms (Lista) [deprecated]`
-- **NÃO remover** do código ainda — podem estar em uso em templates de clientes existentes
+- **NÃO remover** do código ainda — remoção efetiva de `TagMetaCTALabel` e `TagMetaCTAUrl` acontece em F2-05
 - Documentar no CHANGELOG que serão removidas na 1.0.0
 
 **Critério de pronto:**
@@ -197,7 +197,7 @@ Essa parte fazemos juntos no terminal antes de ligar o Claude Code em qualquer t
 - Docblock `@deprecated` presente
 - Entrada no CHANGELOG explicando o motivo e data de remoção planejada
 
-**Referências:** DR-08
+**Referências:** DR-08, DR-11
 
 ---
 
@@ -295,24 +295,41 @@ Essa parte fazemos juntos no terminal antes de ligar o Claude Code em qualquer t
 
 ---
 
-### F2-04 — Revisar widget Hero (limpar ou manter)
+### F2-04 — Remover widget Hero e dependências
 
-**Problema:** widget Hero existe como auxiliar, mas foi criado no contexto antigo (quando imaginávamos que o plugin desenhasse layouts). Hoje, com a filosofia "página individual é editada livremente no Elementor", pode ser redundante.
+**Decisão:** DR-11 — Hero nunca foi usado em produção. Duplicava Container + Imagem nativos do Elementor.
 
-**Ação — etapa de decisão:**
-- Confirmar com o operador (você): Hero ainda é usado em algum site em produção?
-- Se sim: manter, documentar, adicionar controles de estilo faltantes
-- Se não: **depreciar** com mesma estratégia do F1-09 (manter no código mas marcar como deprecated, remover em 1.0.0)
+**Ação:**
+- Deletar `includes/elementor/widgets/Hero.php`
+- Deletar assets CSS/JS exclusivos do Hero (se houver)
+- Remover registro do widget no `Elementor/Bootstrap.php`
+- Deletar meta fields órfãos do código: `_imo_title`, `_imo_subtitle`, `_imo_hero_bg_id`
+- NÃO deletar os valores desses meta fields do banco — ficam órfãos e inofensivos
 
 **Critério de pronto:**
-- Decisão registrada em DR nova
-- Ação (manter+melhorar ou depreciar) executada conforme decisão
+- Arquivo Hero.php não existe mais no repositório
+- Plugin ativa sem erro
+- Nenhuma referência a Hero.php em require_once ou registro de widget
 
 ---
 
-### F2-05 — Revisar widget CTA (mesma análise do Hero)
+### F2-05 — Remover widget FormCTA e dependências
 
-Mesma lógica do F2-04, aplicada ao widget CTA (`FormCTA.php`).
+**Decisão:** DR-11 — FormCTA nunca foi usado em produção. Duplicava Botão nativo do Elementor com Post URL.
+
+**Ação:**
+- Deletar `includes/elementor/widgets/FormCTA.php`
+- Deletar assets CSS/JS exclusivos do FormCTA (se houver)
+- Remover registro do widget no `Elementor/Bootstrap.php`
+- Deletar dynamic tags `TagMetaCTALabel.php` e `TagMetaCTAUrl.php`
+- Remover registro dessas tags no `DynamicTags/Bootstrap.php`
+- Deletar meta fields órfãos do código: `_imo_cta_label`, `_imo_cta_url`
+- NÃO deletar os valores desses meta fields do banco
+
+**Critério de pronto:**
+- Arquivos FormCTA.php, TagMetaCTALabel.php e TagMetaCTAUrl.php não existem mais
+- Plugin ativa sem erro
+- Nenhuma referência a esses arquivos em require_once ou registro
 
 ---
 

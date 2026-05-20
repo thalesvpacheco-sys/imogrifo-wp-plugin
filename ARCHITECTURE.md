@@ -218,6 +218,8 @@ Meta fields pontuais usados pelos widgets auxiliares Hero e CTA:
 - `_imo_subtitle` — subtítulo do hero
 - `_imo_hero_bg_id` — ID de attachment para background do hero
 
+> **Nota (DR-11):** todos os 5 meta fields listados acima estão ligados exclusivamente aos widgets Hero e FormCTA, depreciados em maio/2026. Serão removidos do código na Fase 2. Registros órfãos no banco de dados de sites existentes são inofensivos.
+
 Esses são **conveniências dos widgets auxiliares**, não schema de domínio. Se Hero/CTA forem removidos, os fields ficam órfãos no banco mas não quebram nada.
 
 Qualquer novo meta field proposto deve passar pela pergunta da Filosofia #5 antes de ser adicionado: *é display ou é filtro/ordenação?*
@@ -237,13 +239,14 @@ Qualquer novo meta field proposto deve passar pela pergunta da Filosofia #5 ante
 | `includes/Elementor/Bootstrap.php` | Init Elementor: categoria, widgets, assets | ativo |
 | `includes/Elementor/Widgets/Filters.php` | Barra de filtros para Archive | ativo — **core** |
 | `includes/Elementor/Widgets/MiniSearch.php` | Busca compacta + autocomplete | ativo |
-| `includes/Elementor/Widgets/Hero.php` | Hero para página single | opcional |
-| `includes/Elementor/Widgets/FormCTA.php` | Botão CTA | opcional |
+| `includes/Elementor/Widgets/Hero.php` | Hero para página single | deprecated — remover na Fase 2 (DR-11) |
+| `includes/Elementor/Widgets/FormCTA.php` | Botão CTA | deprecated — remover na Fase 2 (DR-11) |
 | `includes/DynamicTags/Bootstrap.php` | Registra dynamic tags | ativo |
 | `includes/DynamicTags/TagPostTermsFiltered.php` | Include/exclude/order de termos | ativo — único com valor real |
 | `includes/DynamicTags/TagPostTerms.php` | Lista termos de N taxonomias | **depreciar** (ver DR-08) |
 | `includes/DynamicTags/TagPostInfoCompact.php` | Cidade/Estado/Status/Tipo em linha | **depreciar** (ver DR-08) |
-| `includes/DynamicTags/TagMetaCTA*.php` | Meta fields do CTA como tags | ativo (ligado ao CTA) |
+| `includes/DynamicTags/TagMetaCTALabel.php` | Meta field _imo_cta_label como tag | deprecated — remover na Fase 2 (DR-11) |
+| `includes/DynamicTags/TagMetaCTAUrl.php` | Meta field _imo_cta_url como tag | deprecated — remover na Fase 2 (DR-11) |
 | `includes/Rest/SuggestController.php` | Endpoint AJAX de autocomplete | ativo |
 
 ### Fonte única de verdade para o card
@@ -373,6 +376,13 @@ Formato: cada decisão arquitetural relevante recebe número, data, contexto, de
 **Contexto:** Decisões de UX do admin (simplicidade vs poder) dependem de quem usa.
 **Decisão:** O plugin é operado pela agência. Cliente final nunca toca o admin.
 **Consequência:** Admin prioriza eficiência de cadastro em lote (Edição Rápida, checkboxes, duplicação) em vez de "simplicidade para leigo". Não há esforço de onboarding ou tour-guide para usuários novos.
+
+### DR-11: Hero e FormCTA depreciados — marcados para remoção
+
+**Data:** 2026-05
+**Contexto:** Inspeção visual dos templates reais em harmonia.grifo.agency (Card Empreendimento e single Morada dos Pássaros) confirmou que os widgets Hero e FormCTA nunca são usados em produção. O botão real do card usa Post URL nativo do Elementor. O hero da single é montado com Container + Imagem nativos do Elementor. Ambos os widgets duplicavam funcionalidade nativa do Elementor Pro, violando Filosofia #2.
+**Decisão:** Depreciar imediatamente. Remover na Fase 2 (F2-04 e F2-05), junto com suas dependências: dynamic tags TagMetaCTALabel e TagMetaCTAUrl, e meta fields _imo_cta_label, _imo_cta_url, _imo_title, _imo_subtitle, _imo_hero_bg_id.
+**Consequência:** Plugin fica mais fino. Supera a indefinição original de F2-04/F2-05 (que antes eram "investigar e decidir"). Meta fields órfãos no banco de dados de sites existentes não causam problema — são ignorados pelo WP.
 
 ---
 
