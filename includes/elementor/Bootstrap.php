@@ -21,6 +21,13 @@ final class Bootstrap
 
         // No editor, garanta os assets carregados
         add_action('elementor/editor/after_enqueue_scripts', [__CLASS__, 'enqueue_editor_assets']);
+
+        // Dynamic Tags
+        $dt_bootstrap = IMOGRIFO_PATH . 'includes/elementor/dynamictags/Bootstrap.php';
+        if (is_readable($dt_bootstrap)) {
+            require_once $dt_bootstrap;
+            \ImoGrifo\DynamicTags\Bootstrap::init();
+        }
     }
 
     public static function register_category($elements_manager): void

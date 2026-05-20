@@ -11,7 +11,13 @@ final class TagMetaCTALabel extends Tag
     public function get_name(){ return 'imo-meta-cta-label'; }
     public function get_title(){ return __('Imo: CTA Label', 'imo-grifo'); }
     public function get_group(){ return 'post'; }
-    public function get_categories(){ return [ Module::TEXT_CATEGORY ]; }
+    public function get_categories()
+    {
+        $cat = defined('Elementor\Modules\DynamicTags\Module::TEXT_CATEGORY')
+            ? Module::TEXT_CATEGORY
+            : 'text';
+        return [ $cat ];
+    }
 
     protected function register_controls(){}
 
