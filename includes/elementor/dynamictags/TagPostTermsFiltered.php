@@ -34,12 +34,17 @@ final class TagPostTermsFiltered extends Tag
 
     public function get_group(): string
     {
-        return Module::POST_GROUP;
+        return defined('Elementor\Modules\DynamicTags\Module::POST_GROUP')
+            ? Module::POST_GROUP
+            : 'post';
     }
 
     public function get_categories(): array
     {
-        return [ Module::TEXT_CATEGORY ];
+        $cat = defined('Elementor\Modules\DynamicTags\Module::TEXT_CATEGORY')
+            ? Module::TEXT_CATEGORY
+            : 'text';
+        return [ $cat ];
     }
 
     protected function register_controls(): void

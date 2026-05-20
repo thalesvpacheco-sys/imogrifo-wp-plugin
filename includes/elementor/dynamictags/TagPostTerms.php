@@ -12,7 +12,13 @@ final class TagPostTerms extends Tag
     public function get_name() { return 'imo-post-terms'; }
     public function get_title(){ return __('Imo: Post Terms (Lista)', 'imo-grifo'); }
     public function get_group(){ return 'post'; }
-    public function get_categories(){ return [ DynamicModule::TEXT_CATEGORY ]; }
+    public function get_categories()
+    {
+        $cat = defined('Elementor\Modules\DynamicTags\Module::TEXT_CATEGORY')
+            ? DynamicModule::TEXT_CATEGORY
+            : 'text';
+        return [ $cat ];
+    }
 
     protected function register_controls()
     {
