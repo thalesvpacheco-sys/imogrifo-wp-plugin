@@ -8,7 +8,7 @@
 
 ## Estado atual
 
-- **Versão:** 0.3.0 (declarada em `imo-grifo.php`)
+- **Versão:** 0.3.1 (declarada em `imo-grifo.php`)
 - **Status:** funcional em produção para o caso Nova Harmonia, mas com bugs críticos listados na análise inicial
 - **Commits pendentes:** nenhum (Git ainda não configurado — setup é pré-requisito do ROADMAP)
 
@@ -444,8 +444,8 @@ Uma fase só é considerada **concluída** quando todas as issues dela têm crit
 | Fase | Nome | Issues | Status |
 |---|---|---|---|
 | Pré-req | Setup Git | 4 checkboxes | 🟡 Em aberto |
-| Fase 1 | Estabilização | F1-01 a F1-10 (10 issues) | ⏸️ Aguardando pré-req |
-| Fase 2 | Filters personalizável | F2-01 a F2-05 (5 issues) | ⏸️ Aguardando Fase 1 |
+| Fase 1 | Estabilização | F1-01 a F1-10 (10 issues) | ✅ Concluída |
+| Fase 2 | Filters personalizável | F2-01 a F2-05 (5 issues) | 🟡 Pronta para começar |
 | Fase 3 | Polimento | F3-01 a F3-05 (5 issues) | ⏸️ Aguardando Fase 2 |
 | Fase 4 | Backlog futuro | — | 📋 Vazio por design |
 
