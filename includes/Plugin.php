@@ -64,16 +64,11 @@ final class Plugin
         add_action('plugins_loaded', function () {
             if (! did_action('elementor/loaded')) { return; }
 
-            foreach ([
-                IMOGRIFO_PATH . 'includes/elementor/Bootstrap.php',
-                IMOGRIFO_PATH . 'includes/Elementor/Bootstrap.php',
-            ] as $file) {
-                if (is_readable($file)) {
-                    require_once $file;
-                    if (class_exists('\ImoGrifo\Elementor\Bootstrap')) {
-                        \ImoGrifo\Elementor\Bootstrap::init();
-                    }
-                    break;
+            $file = IMOGRIFO_PATH . 'includes/elementor/Bootstrap.php';
+            if (is_readable($file)) {
+                require_once $file;
+                if (class_exists('\ImoGrifo\Elementor\Bootstrap')) {
+                    \ImoGrifo\Elementor\Bootstrap::init();
                 }
             }
         }, 30);
@@ -142,14 +137,8 @@ final class Plugin
     {
         if (! did_action('elementor/loaded')) { return; }
 
-        $path = self::firstReadable([
-            'includes/Elementor/Widgets/Filters.php',
-            'includes/elementor/Widgets/Filters.php',
-            'includes/Elementor/widgets/Filters.php',
-            'includes/elementor/widgets/Filters.php',
-        ]);
-
-        if ($path) {
+        $path = IMOGRIFO_PATH . 'includes/elementor/widgets/Filters.php';
+        if (is_readable($path)) {
             require_once $path;
             if (class_exists('\ImoGrifo\Elementor\Widgets\Filters')) {
                 // garante assets disponíveis para o widget
