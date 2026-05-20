@@ -82,80 +82,8 @@ final class Plugin
             }
         }, 30);
 
-        // -------- FALLBACK: registra categoria, widget e assets diretamente ----------
-        add_action('elementor/elements/categories_registered', [__CLASS__, 'register_elementor_category'], 9);
-        add_action('elementor/frontend/after_register_styles', [__CLASS__, 'register_widget_styles']);
-        add_action('elementor/frontend/after_register_scripts', [__CLASS__, 'register_widget_scripts']);
-        add_action('elementor/editor/after_enqueue_scripts', [__CLASS__, 'enqueue_widget_in_editor']);
-        add_action('elementor/widgets/register', [__CLASS__, 'register_filters_widget'], 9);
-
         // Filtros no archive (q / cidade / status|status_obra)
         add_action('pre_get_posts', [__CLASS__, 'apply_archive_filters']);
-    }
-
-    // ----------------- Helpers -----------------
-    private static function firstReadable(array $paths): ?string
-    {
-        foreach ($paths as $rel) {
-            $file = IMOGRIFO_PATH . $rel;
-            if (is_readable($file)) { return $file; }
-        }
-        return null;
-    }
-
-    // ----------------- Elementor (fallback) -----------------
-    public static function register_elementor_category($elements_manager): void
-    {
-        if (! did_action('elementor/loaded')) { return; }
-        $elements_manager->add_category('imo-grifo', [
-            'title' => __('Imo Grifo', 'imo-grifo'),
-            'icon'  => 'fa fa-plug',
-        ], 1);
-    }
-
-    public static function register_widget_styles(): void
-    {
-        $css_file = IMOGRIFO_PATH . 'assets/css/filters.css';
-        wp_register_style(
-            'imo-filters-css',
-            plugins_url('assets/css/filters.css', IMOGRIFO_FILE),
-            [],
-            is_readable($css_file) ? (string) filemtime($css_file) : '1.0.0'
-        );
-    }
-
-    public static function register_widget_scripts(): void
-    {
-        $js_file = IMOGRIFO_PATH . 'assets/js/filters.js';
-        wp_register_script(
-            'imo-filters-js',
-            plugins_url('assets/js/filters.js', IMOGRIFO_FILE),
-            ['jquery'],
-            is_readable($js_file) ? (string) filemtime($js_file) : '1.0.0',
-            true
-        );
-    }
-
-    public static function enqueue_widget_in_editor(): void
-    {
-        wp_enqueue_style('imo-filters-css');
-        wp_enqueue_script('imo-filters-js');
-    }
-
-    public static function register_filters_widget($widgets_manager): void
-    {
-        if (! did_action('elementor/loaded')) { return; }
-
-        $path = IMOGRIFO_PATH . 'includes/elementor/widgets/Filters.php';
-        if (is_readable($path)) {
-            require_once $path;
-            if (class_exists('\ImoGrifo\Elementor\Widgets\Filters')) {
-                // garante assets disponíveis para o widget
-                self::register_widget_styles();
-                self::register_widget_scripts();
-                $widgets_manager->register(new \ImoGrifo\Elementor\Widgets\Filters());
-            }
-        }
     }
 
     // ----------------- Autoloader -----------------
