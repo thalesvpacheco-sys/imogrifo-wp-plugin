@@ -84,6 +84,9 @@ final class Plugin
 
         // Filtros no archive (q / cidade / status|status_obra)
         add_action('pre_get_posts', [__CLASS__, 'apply_archive_filters']);
+
+        // Filtros para Elementor Loop Grid com Query ID "imo_archive"
+        add_action('elementor/query/imo_archive', [$this, 'apply_loop_grid_filters'], 10, 2);
     }
 
     // ----------------- Autoloader -----------------
@@ -130,12 +133,23 @@ final class Plugin
         });
     }
 
-    // ----------------- Filtro no archive -----------------
+    // ----------------- Filtro no archive (query principal) -----------------
     public static function apply_archive_filters(\WP_Query $q): void
     {
         if (is_admin() || ! $q->is_main_query()) { return; }
         if (! $q->is_post_type_archive('empreendimento')) { return; }
+        self::apply_filters_to_query($q);
+    }
 
+    // ----------------- Filtro para Elementor Loop Grid -----------------
+    public function apply_loop_grid_filters(\WP_Query $q): void
+    {
+        self::apply_filters_to_query($q);
+    }
+
+    // ----------------- Lógica compartilhada de filtros GET -----------------
+    private static function apply_filters_to_query(\WP_Query $q): void
+    {
         if (isset($_GET['q']) && $_GET['q'] !== '') {
             $q->set('s', sanitize_text_field(wp_unslash($_GET['q'])));
         }
