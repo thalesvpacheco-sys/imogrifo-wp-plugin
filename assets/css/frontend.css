@@ -1,31 +1,3 @@
-/* Hero básico */
-.imo-hero {
-  position: relative;
-  padding: 72px 20px;
-  background-size: cover;
-  background-position: center;
-  color: #fff;
-}
-.imo-hero::after {
-  content: "";
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.35));
-}
-.imo-hero__inner { position: relative; z-index: 2; max-width: 1140px; margin: 0 auto; }
-.imo-hero__title { font-size: clamp(28px, 3vw, 44px); margin: 0 0 8px; }
-.imo-hero__subtitle { font-size: clamp(16px, 2vw, 20px); margin: 0; }
-
-/* CTA */
-.imo-cta { text-align: left; }
-.imo-cta__btn {
-  display: inline-block;
-  padding: 12px 20px;
-  background: #0a66ff;
-  color: #fff; text-decoration: none;
-  border-radius: 8px;
-}
-.imo-cta__btn:hover { filter: brightness(0.95); }
-
 /* ===================================================================== */
 /* Imo Filters — GRID 12 col (versão única, sem FLEX)                     */
 /* ===================================================================== */
