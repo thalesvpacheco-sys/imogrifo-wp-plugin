@@ -156,6 +156,14 @@ final class Plugin
 
         $tax_query = [];
 
+        if (! empty($_GET['estado'])) {
+            $tax_query[] = [
+                'taxonomy' => 'estado',
+                'field'    => 'slug',
+                'terms'    => sanitize_title(wp_unslash($_GET['estado'])),
+            ];
+        }
+
         if (! empty($_GET['cidade'])) {
             $tax_query[] = [
                 'taxonomy' => 'cidade',

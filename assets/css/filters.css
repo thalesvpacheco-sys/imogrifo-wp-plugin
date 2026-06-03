@@ -1,25 +1,30 @@
-/* ===== Barra (layout RN) ===== */
+/* ===== Barra (layout full) ===== */
 .rn-search-wrapper{
   --bg:#f0ebf5; --blue:#026938; --blue-hover:#01512c; --orange:#EA932A; --radius:40px;
-  position:relative; display:flex; align-items:center; gap:16px;
+  position:relative; display:flex; align-items:center; gap:8px;
   background:var(--bg); border-radius:var(--radius); padding:12px 16px;
   font-family:'Lato',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; font-weight:500;
 }
-.rn-search-wrapper input,
-.rn-search-wrapper select{
+
+/* Campo de busca (input text) */
+.rn-search-wrapper input:not([type="hidden"]){
   background:transparent; font-size:16px; color:#0f172a; padding:10px 12px;
   outline:none!important; border:none!important; box-shadow:none!important;
+  transition:background-color .2s ease; min-height:44px; flex:2; min-width:180px;
+}
+.rn-search-wrapper input:not([type="hidden"]):focus{
+  background:rgba(255,255,255,.18);
 }
 
-/* Proporções: search cresce, selects menores */
-.rn-search-wrapper .rn-search{ flex:2; min-width:220px; }
-.rn-search-wrapper .rn-localizacao,
-.rn-search-wrapper .rn-status { flex:1; min-width:160px; cursor:pointer; }
+/* Proporção dos dropdowns customizados */
+.rn-search-wrapper .imo-dropdown{ flex:1; min-width:150px; }
 
 /* Botão-lupa (chip) */
 .rn-search-btn{
-  display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; margin-left:8px;
-  background:var(--blue); border:none; border-radius:12px; cursor:pointer; transition:background .18s ease;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:44px; height:44px; flex-shrink:0;
+  background:var(--blue); border:none; border-radius:12px; cursor:pointer;
+  transition:background .18s ease;
 }
 .rn-search-btn:hover{ background:var(--blue-hover); }
 .rn-search-btn svg{ width:22px; height:22px; display:block; }
@@ -37,12 +42,143 @@
 .imo-suggest-title{ font-size:15px; color:#0f172a; font-weight:500; }
 .imo-suggest-meta{ font-size:12px; color:#64748b; }
 
-/* Responsivo */
-@media (max-width:640px){
+/* Responsivo — full */
+@media (max-width:767px){
   .rn-search-wrapper{ flex-wrap:wrap; gap:10px; }
-  .rn-search-wrapper .rn-search,
-  .rn-search-wrapper .rn-localizacao,
-  .rn-search-wrapper .rn-status { flex:1 1 100%; }
-  .rn-search-btn{ order:99; margin:8px auto 0; }
+  .rn-search-wrapper input:not([type="hidden"]),
+  .rn-search-wrapper .imo-dropdown{ flex:1 1 100%; min-width:0; }
+  /* Estado e botão de busca lado a lado na mesma linha */
+  .rn-search-wrapper .imo-dropdown[data-name="estado"]{ flex:1; min-width:0; }
+  .rn-search-btn{ flex-shrink:0; }
   .rn-autocomplete{ left:12px; right:12px; }
+}
+
+
+/* ===== Dropdowns customizados (layout full) ===== */
+.imo-dropdown{
+  position:relative;
+}
+
+.imo-dropdown-trigger{
+  display:flex; align-items:center; gap:8px; width:100%;
+  background:#fff; border:1px solid #e0e0e0; border-radius:8px;
+  padding:10px 16px; cursor:pointer;
+  font-family:'Lato',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  font-size:15px; color:#333; font-weight:500;
+  transition:border-color .2s ease, box-shadow .2s ease;
+  min-height:44px; white-space:nowrap;
+}
+
+.imo-dropdown-trigger:hover,
+.imo-dropdown.open .imo-dropdown-trigger{
+  border-color:#026938;
+  box-shadow:0 0 0 2px rgba(2,105,56,.1);
+}
+
+.imo-dropdown-label{
+  flex:1; overflow:hidden; text-overflow:ellipsis; text-align:left;
+}
+
+.imo-dropdown-chevron{
+  color:#999; flex-shrink:0;
+  transition:transform .25s ease;
+}
+.imo-dropdown.open .imo-dropdown-chevron{
+  transform:rotate(180deg);
+}
+
+/* Lista — fechada */
+.imo-dropdown-list{
+  position:absolute; top:calc(100% + 6px); left:0; min-width:100%;
+  list-style:none; margin:0; padding:6px 0;
+  background:#fff; border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+  max-height:280px; overflow-y:auto; z-index:999;
+  opacity:0; transform:translateY(-8px); pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;
+}
+
+/* Lista — aberta */
+.imo-dropdown.open .imo-dropdown-list{
+  opacity:1; transform:translateY(0); pointer-events:auto;
+}
+
+.imo-dropdown-list li{
+  padding:10px 20px; cursor:pointer;
+  font-family:'Lato',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  font-size:14px; color:#333; white-space:nowrap;
+  transition:background .15s ease;
+}
+.imo-dropdown-list li:hover{ background:#f5f5f5; }
+.imo-dropdown-list li.selected{ color:#026938; font-weight:600; }
+
+/* Scrollbar */
+.imo-dropdown-list::-webkit-scrollbar{ width:4px; }
+.imo-dropdown-list::-webkit-scrollbar-thumb{ background:#ccc; border-radius:4px; }
+.imo-dropdown-list::-webkit-scrollbar-track{ background:transparent; }
+
+/* Mobile */
+@media (max-width:767px){
+  .imo-dropdown-trigger{ width:100%; }
+  .imo-dropdown-list{ left:0; right:0; min-width:unset; }
+  .imo-dropdown-list li{ padding:14px 20px; }
+}
+
+
+/* ===== Layout Estado (dropdown minimalista standalone) ===== */
+.imo-state-filter{
+  position:relative; display:inline-block;
+  font-family:'Lato',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+}
+
+.imo-state-trigger{
+  display:inline-flex; align-items:center; gap:8px;
+  background:#fff; border:1px solid #e0e0e0; border-radius:50px;
+  padding:12px 20px; cursor:pointer; font-family:inherit; font-size:15px; color:#333;
+  transition:border-color .18s ease, box-shadow .18s ease;
+}
+.imo-state-trigger:hover{
+  border-color:#bdbdbd; box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.imo-state-icon{ width:18px; height:18px; flex-shrink:0; }
+.imo-state-label{ white-space:nowrap; }
+.imo-state-chevron{
+  width:12px; height:12px; flex-shrink:0;
+  transition:transform .2s ease;
+}
+.imo-state-filter.imo-state-open .imo-state-chevron{ transform:rotate(180deg); }
+
+/* Dropdown — fechado */
+.imo-state-dropdown{
+  position:absolute; top:calc(100% + 6px); left:0; min-width:100%;
+  list-style:none; margin:0; padding:6px 0;
+  background:#fff; border-radius:12px;
+  box-shadow:0 6px 24px rgba(0,0,0,.12);
+  max-height:300px; overflow-y:auto; z-index:999;
+  transform-origin:top center;
+  transform:scaleY(0); opacity:0; pointer-events:none;
+  transition:transform .15s ease, opacity .15s ease;
+}
+
+/* Dropdown — aberto */
+.imo-state-filter.imo-state-open .imo-state-dropdown{
+  transform:scaleY(1); opacity:1; pointer-events:auto;
+  transition:transform .2s ease, opacity .2s ease;
+}
+
+.imo-state-dropdown li{
+  padding:10px 20px; cursor:pointer;
+  font-size:15px; color:#333; white-space:nowrap;
+  transition:background .12s ease;
+}
+.imo-state-dropdown li:hover{ background:#f5f5f5; }
+.imo-state-dropdown li.imo-state-selected{ color:#026938; font-weight:600; }
+
+/* Responsivo — estado standalone */
+@media (max-width:767px){
+  .imo-state-filter{ display:block; }
+  .imo-state-trigger{ width:100%; justify-content:flex-start; }
+  .imo-state-dropdown{ left:0; right:0; min-width:unset; }
+  .imo-state-dropdown li{ padding:14px 20px; }
 }
