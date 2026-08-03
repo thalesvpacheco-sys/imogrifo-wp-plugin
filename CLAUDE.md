@@ -380,6 +380,8 @@ Por que sem tag funciona: a biblioteca tenta, em ordem, Release do GitHub → ta
 
 Continua manual apenas o primeiro envio do plugin num site novo (ZIP via WordPress Admin → Plugins → Adicionar Novo → Enviar Plugin) — depois disso as atualizações seguem só pelo push na `main`.
 
+**Responsabilidade do Claude Code — subir a versão sozinho:** sempre que uma alteração de código (não só documentação) for implementada, subir a versão no cabeçalho do `imo-grifo.php` (`Version:`) e na constante `IMOGRIFO_VER` faz parte da própria mudança — o Claude Code faz isso junto, sem esperar o operador pedir separadamente. A versão sobe dentro do mesmo diff apresentado pra revisão, igual qualquer outra mudança de código; commit e push continuam manuais, feitos pelo operador no terminal, como sempre. Se uma tarefa tocar só documentação (`.md`) sem mudar comportamento do plugin, não precisa subir versão.
+
 Verificação obrigatória antes de marcar issue como concluída
 
 
