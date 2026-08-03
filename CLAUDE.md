@@ -468,7 +468,7 @@ Commit com feat(taxonomies): adiciona taxonomia <slug>
 
 
 
-Padrão atual: todas as taxonomias são hierarchical: true (UI de checkboxes), public: true, show\_in\_rest: true.
+Padrão atual: public: true, show\_in\_rest: true em todas. hierarchical: true (UI de checkboxes) é o padrão pra eixos categóricos reutilizados (cidade, estado, tipo, status). Para taxonomias de valor livre/digitado por empreendimento (ex: lotes, DR-12), usar hierarchical: false (estilo Tags) — permite digitar direto na Edição Rápida e cria o termo na hora, sem precisar cadastrar antes numa tela separada.
 
 
 
