@@ -358,29 +358,27 @@ Ambientes
 
 AmbienteURLUsoDesenvolvimentoD:\\Wordpress\\imo-grifo\\ (local)Edição de códigoTesteharmonia.grifo.agencyValidação após cada issueProduçãonovaharmonia.com.brCliente real — só recebe após validado em teste
 
-Fluxo atual (manual)
+Deploy automático (implementado, adiantado da Fase 3)
+
+O plugin se auto-atualiza via GitHub usando a biblioteca Plugin Update Checker (`includes/libs/plugin-update-checker/`), configurada em `imo-grifo.php` apontando pro repositório https://github.com/thalesvpacheco-sys/imogrifo-wp-plugin com `setBranch('main')`. Vale para qualquer site que tenha o plugin instalado — harmonia.grifo.agency, novaharmonia.com.br, e futuros clientes — sem depender de credenciais de host nem GitHub Actions.
+
+Fluxo de release (sem precisar criar tag nem release no GitHub):
 
 
 
-Alterar código localmente no VS Code
+Terminar o trabalho na branch, testar localmente, merge manual pra `main` (fluxo de branches de sempre)
 
-Salvar arquivos
+Subir a versão no cabeçalho do `imo-grifo.php` (`Version:`) e na constante `IMOGRIFO_VER` — os dois precisam bater, o Update Checker lê o cabeçalho
 
-Compactar pasta do plugin em ZIP
+Enviar a `main` pro GitHub (`git push origin main`)
 
-WordPress Admin do harmonia.grifo.agency → Plugins → Adicionar Novo → Enviar Plugin
-
-Sobrescrever versão anterior
-
-Testar funcionalidade afetada
-
-Se ok, repetir passo 3-6 para novaharmonia.com.br
+Cada site com o plugin instalado passa a mostrar "Atualização disponível" em Plugins do WP em algumas horas (ou na hora, clicando "Verificar novamente")
 
 
 
-Deploy automático — futuro (issue F3-XX)
+Por que sem tag funciona: a biblioteca tenta, em ordem, Release do GitHub → tag mais recente → conteúdo direto da branch `main`. Como o repositório não tem nenhuma tag nem release, ela cai direto na branch e compara o `Version:` de lá com o instalado. **Atenção:** se algum dia uma tag ou Release for criada no repositório (de propósito ou sem querer), a biblioteca passa a priorizá-la para sempre, e esse fluxo simples de "só dar push na main" para de valer até a tag ser removida ou passar a ser usada de propósito.
 
-Configurar deploy automático via Git Hook ou GitHub Actions para harmonia.grifo.agency. Produção continua manual. Não fazer agora — Fase 3.
+Continua manual apenas o primeiro envio do plugin num site novo (ZIP via WordPress Admin → Plugins → Adicionar Novo → Enviar Plugin) — depois disso as atualizações seguem só pelo push na `main`.
 
 Verificação obrigatória antes de marcar issue como concluída
 

@@ -62,6 +62,14 @@ final class Filters extends Widget_Base
             'condition'    => [ 'layout' => 'full' ],
         ]);
 
+        $this->add_control('show_tipo', [
+            'label'        => __('Mostrar Tipo', 'imo-grifo'),
+            'type'         => Controls_Manager::SWITCHER,
+            'return_value' => 'yes',
+            'default'      => '',
+            'condition'    => [ 'layout' => 'full' ],
+        ]);
+
         $this->end_controls_section();
 
         $this->start_controls_section('section_style', [
@@ -119,6 +127,7 @@ final class Filters extends Widget_Base
         $st_cur  = isset($_GET['status_obra']) ? sanitize_text_field( wp_unslash($_GET['status_obra']) )
                   : ( isset($_GET['status']) ? sanitize_text_field( wp_unslash($_GET['status']) ) : '' );
         $est_cur = isset($_GET['estado']) ? sanitize_title( wp_unslash($_GET['estado']) ) : '';
+        $tipo_cur = isset($_GET['tipo']) ? sanitize_title( wp_unslash($_GET['tipo']) ) : '';
 
         // Compat: usa status_obra se existir; senão cai pro status antigo
         $status_tax = taxonomy_exists('status_obra') ? 'status_obra' : ( taxonomy_exists('status') ? 'status' : 'status_obra' );
@@ -126,6 +135,7 @@ final class Filters extends Widget_Base
         $cidades = get_terms([ 'taxonomy'=>'cidade',    'hide_empty'=>false ]);
         $status  = get_terms([ 'taxonomy'=>$status_tax, 'hide_empty'=>false ]);
         $estados = $s['show_estado'] === 'yes' ? get_terms([ 'taxonomy'=>'estado', 'hide_empty'=>true ]) : [];
+        $tipos   = $s['show_tipo'] === 'yes' ? get_terms([ 'taxonomy'=>'tipo', 'hide_empty'=>true ]) : [];
 
         echo '<form class="imo-filters-form" action="'. esc_url($action) .'" method="get" role="search">';
         echo '<div class="rn-search-wrapper imo-rn-filter" data-scope="1">';
@@ -142,6 +152,10 @@ final class Filters extends Widget_Base
 
         if ( $s['show_estado'] === 'yes' ) {
             $this->render_dropdown( 'estado', __('Estado', 'imo-grifo'), $estados, $est_cur );
+        }
+
+        if ( $s['show_tipo'] === 'yes' ) {
+            $this->render_dropdown( 'tipo', __('Tipo', 'imo-grifo'), $tipos, $tipo_cur );
         }
 
         echo '<button class="rn-search-btn" type="submit" aria-label="'. esc_attr__('Aplicar filtros', 'imo-grifo') .'">

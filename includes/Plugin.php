@@ -172,6 +172,14 @@ final class Plugin
             ];
         }
 
+        if (! empty($_GET['tipo'])) {
+            $tax_query[] = [
+                'taxonomy' => 'tipo',
+                'field'    => 'slug',
+                'terms'    => sanitize_title(wp_unslash($_GET['tipo'])),
+            ];
+        }
+
         $status_slug = '';
         $status_tax  = '';
 
