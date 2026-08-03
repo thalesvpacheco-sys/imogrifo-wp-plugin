@@ -84,5 +84,17 @@ final class Taxonomies
             'rest_base'         => 'estados',
             'rewrite'           => ['slug' => 'estado'],
         ]);
+
+        // LOTES (quantidade — administrativa, não filtrável — DR-12)
+        register_taxonomy('lotes', 'empreendimento', [
+            'labels'            => $labels('Lotes', 'Lotes', true),
+            'public'            => true,
+            'hierarchical'      => true,
+            'show_ui'           => true,
+            'show_admin_column' => true,
+            'show_in_rest'      => true,
+            'rest_base'         => 'lotes',
+            'rewrite'           => ['slug' => 'lotes'],
+        ]);
     }
 }

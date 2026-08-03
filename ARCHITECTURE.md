@@ -41,7 +41,7 @@ Fluxo real de trabalho, em sequência:
 ### Dentro de escopo
 
 - Custom Post Type `empreendimento`
-- Taxonomias: `cidade`, `estado`, `tipo`, `status` (obra)
+- Taxonomias: `cidade`, `estado`, `tipo`, `status` (obra), `lotes` (quantidade — administrativa, não filtrável)
 - Filtro de archive via URL (`?q=...&cidade=...&status_obra=...`) usando `pre_get_posts`
 - Widget Elementor de barra de filtros (Filters) para uso em Archive templates
 - Widget Elementor de busca compacta (MiniSearch) com autocomplete AJAX
@@ -193,6 +193,7 @@ Todas `hierarchical: true`, públicas, `show_in_rest: true`:
 | `estado` | Estados (UF) | `/estado/` | `estados` | UF (AC..TO) |
 | `tipo` | Tipos | `/tipo-empreendimento/` | `tipos` | Bairro Planejado, Condomínio Vertical, Loteamento... |
 | `status` | Status (Obra) | `/status-obra/` | `status-obra` | Lançamento, Em obras, Pronto para construir, Pronto |
+| `lotes` | Lotes | `/lotes/` | `lotes` | Quantidade de lotes do empreendimento — administrativa, não usada como filtro (ver DR-12) |
 
 **Observação sobre o slug `status`:** o slug interno é `status` mas o rewrite é `/status-obra/` e o REST base é `status-obra`. O parâmetro de URL aceito no filtro é `status_obra` (com compat para `status` por histórico). Ver lógica em `apply_archive_filters()`.
 
@@ -383,6 +384,13 @@ Formato: cada decisão arquitetural relevante recebe número, data, contexto, de
 **Contexto:** Inspeção visual dos templates reais em harmonia.grifo.agency (Card Empreendimento e single Morada dos Pássaros) confirmou que os widgets Hero e FormCTA nunca são usados em produção. O botão real do card usa Post URL nativo do Elementor. O hero da single é montado com Container + Imagem nativos do Elementor. Ambos os widgets duplicavam funcionalidade nativa do Elementor Pro, violando Filosofia #2.
 **Decisão:** Depreciar imediatamente. Remover na Fase 2 (F2-04 e F2-05), junto com suas dependências: dynamic tags TagMetaCTALabel e TagMetaCTAUrl, e meta fields _imo_cta_label, _imo_cta_url, _imo_title, _imo_subtitle, _imo_hero_bg_id.
 **Consequência:** Plugin fica mais fino. Supera a indefinição original de F2-04/F2-05 (que antes eram "investigar e decidir"). Meta fields órfãos no banco de dados de sites existentes não causam problema — são ignorados pelo WP.
+
+### DR-12: Taxonomia `lotes` para quantidade de lotes por empreendimento
+
+**Data:** 2026-08-03
+**Contexto:** Operador pediu uma forma de registrar a quantidade de lotes de cada empreendimento (loteamentos, bairros planejados), usando o mesmo fluxo de cadastro das outras 4 taxonomias — Edição Rápida com checkbox — em vez de digitar o número como texto livre dentro da página no Elementor.
+**Decisão:** Criar taxonomia `lotes`, hierárquica, seguindo o mesmo padrão de `cidade`/`estado`/`tipo`/`status`. Sem seed inicial — termos (os números) são criados sob demanda pelo operador na tela Empreendimentos → Lotes, exatamente como uma cidade nova é criada hoje. **Não é exposta como filtro** no widget Filters nem em `apply_archive_filters()` — existe só para exibição/organização administrativa.
+**Consequência:** Quinta taxonomia do plugin. Não conflita com DR-03 (que trata de meta fields para dados quantitativos como preço/metragem/vagas) porque `lotes` é implementada como taxonomia, não como meta field — segue o raciocínio de DR-01 (taxonomia > post_meta para eixos administrados via Edição Rápida). Se no futuro precisar virar filtro de verdade ou faixa numérica, reavaliar como campo estruturado — essa decisão cobre só o uso administrativo/exibição atual.
 
 ---
 
