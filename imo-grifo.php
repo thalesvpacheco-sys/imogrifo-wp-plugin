@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Imo Grifo
  * Description: CPT Empreendimentos + Taxonomias + Widgets/Tags Elementor (sem Editar IMO).
- * Version: 0.3.4
+ * Version: 0.3.5
  * Author: Grifo Agency
  * Text Domain: imo-grifo
  */
@@ -13,7 +13,7 @@ if (! defined('ABSPATH')) { exit; }
 if (! defined('IMOGRIFO_FILE')) { define('IMOGRIFO_FILE', __FILE__); }
 if (! defined('IMOGRIFO_PATH')) { define('IMOGRIFO_PATH', plugin_dir_path(__FILE__)); }
 if (! defined('IMOGRIFO_URL'))  { define('IMOGRIFO_URL',  plugin_dir_url(__FILE__)); }
-if (! defined('IMOGRIFO_VER'))  { define('IMOGRIFO_VER',  '0.3.4'); }
+if (! defined('IMOGRIFO_VER'))  { define('IMOGRIFO_VER',  '0.3.5'); }
 
 // Auto-update via GitHub Releases (evita reenvio manual de ZIP)
 $imogrifo_puc = IMOGRIFO_PATH . 'includes/libs/plugin-update-checker/plugin-update-checker.php';

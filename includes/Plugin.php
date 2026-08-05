@@ -57,6 +57,9 @@ final class Plugin
             }
         }, 20);
 
+        // Link externo por empreendimento (override de permalink — DR-13 / F2-06)
+        (new \ImoGrifo\ExternalLink())->boot();
+
         // Autocomplete AJAX
         $sc = IMOGRIFO_PATH . 'includes/rest/SuggestController.php';
         if (is_readable($sc)) {
