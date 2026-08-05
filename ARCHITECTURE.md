@@ -41,7 +41,7 @@ Fluxo real de trabalho, em sequência:
 ### Dentro de escopo
 
 - Custom Post Type `empreendimento`
-- Taxonomias: `cidade`, `estado`, `tipo`, `status` (obra)
+- Taxonomias: `cidade`, `estado`, `tipo`, `status` (obra), `lotes` (quantidade — administrativa, não filtrável)
 - Filtro de archive via URL (`?q=...&cidade=...&status_obra=...`) usando `pre_get_posts`
 - Widget Elementor de barra de filtros (Filters) para uso em Archive templates
 - Widget Elementor de busca compacta (MiniSearch) com autocomplete AJAX
@@ -185,14 +185,15 @@ Nenhuma dessas etapas renderiza HTML vindo do plugin, exceto a barra de filtros 
 
 ### Taxonomias
 
-Todas `hierarchical: true`, públicas, `show_in_rest: true`:
+Públicas, `show_in_rest: true`. Todas `hierarchical: true` (UI de checkboxes), **exceto `lotes`** (`hierarchical: false`, estilo Tags — ver DR-12):
 
-| Slug interno | Label | Rewrite | REST base | Uso |
-|---|---|---|---|---|
-| `cidade` | Cidades | `/cidade/` | `cidades` | Município do empreendimento |
-| `estado` | Estados (UF) | `/estado/` | `estados` | UF (AC..TO) |
-| `tipo` | Tipos | `/tipo-empreendimento/` | `tipos` | Bairro Planejado, Condomínio Vertical, Loteamento... |
-| `status` | Status (Obra) | `/status-obra/` | `status-obra` | Lançamento, Em obras, Pronto para construir, Pronto |
+| Slug interno | Label | Hierárquica | Rewrite | REST base | Uso |
+|---|---|---|---|---|---|
+| `cidade` | Cidades | sim | `/cidade/` | `cidades` | Município do empreendimento |
+| `estado` | Estados (UF) | sim | `/estado/` | `estados` | UF (AC..TO) |
+| `tipo` | Tipos | sim | `/tipo-empreendimento/` | `tipos` | Bairro Planejado, Condomínio Vertical, Loteamento... |
+| `status` | Status (Obra) | sim | `/status-obra/` | `status-obra` | Lançamento, Em obras, Pronto para construir, Pronto |
+| `lotes` | Lotes | **não** | `/lotes/` | `lotes` | Quantidade de lotes do empreendimento — administrativa, não usada como filtro (ver DR-12) |
 
 **Observação sobre o slug `status`:** o slug interno é `status` mas o rewrite é `/status-obra/` e o REST base é `status-obra`. O parâmetro de URL aceito no filtro é `status_obra` (com compat para `status` por histórico). Ver lógica em `apply_archive_filters()`.
 
@@ -383,6 +384,13 @@ Formato: cada decisão arquitetural relevante recebe número, data, contexto, de
 **Contexto:** Inspeção visual dos templates reais em harmonia.grifo.agency (Card Empreendimento e single Morada dos Pássaros) confirmou que os widgets Hero e FormCTA nunca são usados em produção. O botão real do card usa Post URL nativo do Elementor. O hero da single é montado com Container + Imagem nativos do Elementor. Ambos os widgets duplicavam funcionalidade nativa do Elementor Pro, violando Filosofia #2.
 **Decisão:** Depreciar imediatamente. Remover na Fase 2 (F2-04 e F2-05), junto com suas dependências: dynamic tags TagMetaCTALabel e TagMetaCTAUrl, e meta fields _imo_cta_label, _imo_cta_url, _imo_title, _imo_subtitle, _imo_hero_bg_id.
 **Consequência:** Plugin fica mais fino. Supera a indefinição original de F2-04/F2-05 (que antes eram "investigar e decidir"). Meta fields órfãos no banco de dados de sites existentes não causam problema — são ignorados pelo WP.
+
+### DR-12: Taxonomia `lotes` para quantidade de lotes por empreendimento
+
+**Data:** 2026-08-03
+**Contexto:** Operador pediu uma forma de registrar a quantidade de lotes de cada empreendimento (loteamentos, bairros planejados) sem precisar pré-cadastrar cada número numa tela separada antes — quer digitar o valor direto na Edição Rápida, na hora, olhando a lista de empreendimentos.
+**Decisão:** Criar taxonomia `lotes`, **não-hierárquica** (`hierarchical: false`, estilo Tags), diferente das outras 4 taxonomias do plugin que são hierárquicas (estilo Categoria, checkbox). Essa escolha é proposital: taxonomias não-hierárquicas mostram um campo de texto livre na Edição Rápida, e o WordPress cria o termo automaticamente se o número digitado ainda não existir — sem precisar passar pela tela Empreendimentos → Lotes antes. Sem seed inicial. **Não é exposta como filtro** no widget Filters nem em `apply_archive_filters()` — existe só para exibição/organização administrativa, consumida no card via Post Info nativo do Elementor (Terms).
+**Consequência:** Quinta taxonomia do plugin, e a primeira não-hierárquica. Não conflita com DR-03 (que trata de meta fields para dados quantitativos como preço/metragem/vagas) porque `lotes` é implementada como taxonomia, não como meta field — segue o raciocínio de DR-01 (taxonomia > post_meta para eixos administrados via Edição Rápida), adaptado pra permitir digitação livre em vez de checkbox. Se no futuro precisar virar filtro de verdade ou faixa numérica, reavaliar como campo estruturado — essa decisão cobre só o uso administrativo/exibição atual.
 
 ---
 

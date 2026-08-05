@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Imo Grifo
  * Description: CPT Empreendimentos + Taxonomias + Widgets/Tags Elementor (sem Editar IMO).
- * Version: 0.3.0
+ * Version: 0.3.4
  * Author: Grifo Agency
  * Text Domain: imo-grifo
  */
@@ -13,7 +13,21 @@ if (! defined('ABSPATH')) { exit; }
 if (! defined('IMOGRIFO_FILE')) { define('IMOGRIFO_FILE', __FILE__); }
 if (! defined('IMOGRIFO_PATH')) { define('IMOGRIFO_PATH', plugin_dir_path(__FILE__)); }
 if (! defined('IMOGRIFO_URL'))  { define('IMOGRIFO_URL',  plugin_dir_url(__FILE__)); }
-if (! defined('IMOGRIFO_VER'))  { define('IMOGRIFO_VER',  '0.3.1'); }
+if (! defined('IMOGRIFO_VER'))  { define('IMOGRIFO_VER',  '0.3.4'); }
+
+// Auto-update via GitHub Releases (evita reenvio manual de ZIP)
+$imogrifo_puc = IMOGRIFO_PATH . 'includes/libs/plugin-update-checker/plugin-update-checker.php';
+if (is_readable($imogrifo_puc) && ! class_exists('YahnisElsts\PluginUpdateChecker\v5p7\PucFactory')) {
+    require_once $imogrifo_puc;
+}
+if (class_exists('YahnisElsts\PluginUpdateChecker\v5\PucFactory')) {
+    $imogrifo_update_checker = \YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+        'https://github.com/thalesvpacheco-sys/imogrifo-wp-plugin/',
+        IMOGRIFO_FILE,
+        'imo-grifo'
+    );
+    $imogrifo_update_checker->setBranch('main');
+}
 
 // Carregar núcleo
 $core = IMOGRIFO_PATH . 'includes/Plugin.php';

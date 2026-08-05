@@ -12,6 +12,8 @@
 - **Status:** funcional em produção para o caso Nova Harmonia, mas com bugs críticos listados na análise inicial
 - **Commits pendentes:** nenhum (Git ainda não configurado — setup é pré-requisito do ROADMAP)
 
+**Fora de sequência (adiantado da Fase 3):** deploy automático via GitHub já implementado — o plugin se auto-atualiza em qualquer site instalado a partir de um push na branch `main` (bump de versão no cabeçalho), sem precisar de tag nem de ZIP manual a cada mudança. Fluxo completo documentado em `CLAUDE.md` → "Deploy automático". Decisão de adiantar tomada em 2026-08-03, fora da ordem sequencial de fases porque resolvia um problema recorrente do dia a dia (reenvio manual de ZIP a cada issue).
+
 ---
 
 ## Pré-requisitos

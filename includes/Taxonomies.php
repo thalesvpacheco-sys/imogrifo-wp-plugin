@@ -84,5 +84,20 @@ final class Taxonomies
             'rest_base'         => 'estados',
             'rewrite'           => ['slug' => 'estado'],
         ]);
+
+        // LOTES (quantidade — administrativa, não filtrável — DR-12)
+        // Não-hierárquica de propósito: permite digitar o número direto na
+        // Edição Rápida (estilo Tags), criando o termo na hora se não existir,
+        // em vez de precisar cadastrar cada número antes na tela da taxonomia.
+        register_taxonomy('lotes', 'empreendimento', [
+            'labels'            => $labels('Lotes', 'Lotes', false),
+            'public'            => true,
+            'hierarchical'      => false,
+            'show_ui'           => true,
+            'show_admin_column' => true,
+            'show_in_rest'      => true,
+            'rest_base'         => 'lotes',
+            'rewrite'           => ['slug' => 'lotes'],
+        ]);
     }
 }
