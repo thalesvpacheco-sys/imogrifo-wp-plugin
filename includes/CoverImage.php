@@ -8,8 +8,9 @@ if ( ! defined('ABSPATH') ) { exit; }
 /**
  * Capa do empreendimento (DR-14 / F2-07).
  *
- * Campo próprio (_imo_cover_id), com upload fixo na tela Editar clássica —
- * fora do sistema de meta boxes do WP, então não some via Opções de Tela.
+ * Campo próprio (_imo_cover_id), com upload via meta box nativo do WP —
+ * funciona tanto no editor clássico quanto no editor de blocos (Gutenberg,
+ * padrão pra este CPT já que show_in_rest é true no PostType.php).
  * Sobrescreve post_thumbnail_id: qualquer lugar que leia a Imagem Destacada
  * (inclusive a Dynamic Tag nativa do Elementor usada no card) passa a
  * resolver pra essa imagem automaticamente, sem reconfigurar o editor.
@@ -24,9 +25,20 @@ final class CoverImage
 
         add_filter('post_thumbnail_id', [$this, 'override_thumbnail_id'], 10, 2);
 
-        add_action('edit_form_after_title', [$this, 'render_cover_box']);
+        add_action('add_meta_boxes_empreendimento', [$this, 'register_metabox']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
         add_action('save_post_empreendimento', [$this, 'save_cover']);
+    }
+
+    public function register_metabox(): void {
+        add_meta_box(
+            'imo_cover_box',
+            __('Capa do Empreendimento', 'imo-grifo'),
+            [$this, 'render_cover_box'],
+            'empreendimento',
+            'side',
+            'high'
+        );
     }
 
     public function register_meta(): void {
@@ -48,32 +60,25 @@ final class CoverImage
     }
 
     public function render_cover_box(\WP_Post $post): void {
-        if ( $post->post_type !== 'empreendimento' ) { return; }
-
         wp_nonce_field('imo_cover_save', self::NONCE_KEY);
 
         $cover_id  = (int) get_post_meta($post->ID, self::META_KEY, true);
         $image_url = $cover_id ? wp_get_attachment_image_url($cover_id, 'medium') : '';
         ?>
-        <div class="postbox imo-cover-box" style="margin-top:20px;">
-            <h2 class="hndle"><span><?php esc_html_e('Capa do Empreendimento', 'imo-grifo'); ?></span></h2>
-            <div class="inside">
-                <p class="description">
-                    <?php esc_html_e('Substitui a Imagem Destacada para este empreendimento. Usada automaticamente em qualquer lugar que exiba a imagem destacada, inclusive no card do Elementor.', 'imo-grifo'); ?>
-                </p>
+        <p class="description">
+            <?php esc_html_e('Substitui a Imagem Destacada para este empreendimento. Usada automaticamente em qualquer lugar que exiba a imagem destacada, inclusive no card do Elementor.', 'imo-grifo'); ?>
+        </p>
 
-                <div class="imo-cover-preview" style="margin:12px 0;max-width:300px;<?php echo $image_url ? '' : 'display:none;'; ?>">
-                    <img src="<?php echo esc_url((string) $image_url); ?>" style="max-width:100%;height:auto;display:block;" alt="">
-                </div>
-
-                <input type="hidden" name="imo_cover_id" class="imo-cover-id-input" value="<?php echo esc_attr((string) $cover_id); ?>">
-
-                <p>
-                    <button type="button" class="button imo-cover-select"><?php echo $cover_id ? esc_html__('Trocar imagem', 'imo-grifo') : esc_html__('Selecionar imagem', 'imo-grifo'); ?></button>
-                    <button type="button" class="button imo-cover-remove" <?php echo $cover_id ? '' : 'style="display:none;"'; ?>><?php esc_html_e('Remover imagem', 'imo-grifo'); ?></button>
-                </p>
-            </div>
+        <div class="imo-cover-preview" style="margin:12px 0;<?php echo $image_url ? '' : 'display:none;'; ?>">
+            <img src="<?php echo esc_url((string) $image_url); ?>" style="max-width:100%;height:auto;display:block;" alt="">
         </div>
+
+        <input type="hidden" name="imo_cover_id" class="imo-cover-id-input" value="<?php echo esc_attr((string) $cover_id); ?>">
+
+        <p>
+            <button type="button" class="button imo-cover-select"><?php echo $cover_id ? esc_html__('Trocar imagem', 'imo-grifo') : esc_html__('Selecionar imagem', 'imo-grifo'); ?></button>
+            <button type="button" class="button imo-cover-remove" <?php echo $cover_id ? '' : 'style="display:none;"'; ?>><?php esc_html_e('Remover imagem', 'imo-grifo'); ?></button>
+        </p>
         <?php
     }
 
