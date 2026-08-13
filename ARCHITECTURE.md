@@ -211,9 +211,10 @@ A agência **deleta manualmente** as UFs (e outros termos) que o cliente não at
 
 **O plugin não define schema oficial de meta fields.**
 
-Meta field **oficial e ativo**:
+Meta fields **oficiais e ativos**:
 
 - `_imo_external_link` — URL de LP externa que sobrescreve o permalink do empreendimento (DR-13)
+- `_imo_cover_id` — ID de anexo que sobrescreve a Imagem Destacada do empreendimento (DR-14)
 
 Meta fields pontuais usados pelos widgets auxiliares Hero e CTA (**depreciados**, ver nota DR-11 abaixo):
 
@@ -242,6 +243,7 @@ Qualquer novo meta field proposto deve passar pela pergunta da Filosofia #5 ante
 | `includes/Taxonomies.php` | Registra as 4 taxonomias | ativo |
 | `includes/Seeds.php` | População inicial de termos | ativo |
 | `includes/ExternalLink.php` | Meta `_imo_external_link` + override de permalink | ativo (DR-13) |
+| `includes/CoverImage.php` | Meta `_imo_cover_id` + override de Imagem Destacada | ativo (DR-14) |
 | `includes/Elementor/Bootstrap.php` | Init Elementor: categoria, widgets, assets | ativo |
 | `includes/Elementor/Widgets/Filters.php` | Barra de filtros para Archive | ativo — **core** |
 | `includes/Elementor/Widgets/MiniSearch.php` | Busca compacta + autocomplete | ativo |
@@ -404,6 +406,13 @@ Formato: cada decisão arquitetural relevante recebe número, data, contexto, de
 **Decisão:** Criar meta field `_imo_external_link` (URL), editável via Edição Rápida na listagem de Empreendimentos. Filtrar `post_type_link` para o CPT `empreendimento`: quando o post tiver `_imo_external_link` preenchido, `get_permalink()` retorna essa URL; senão, comportamento padrão do WordPress.
 **Consequência:** Qualquer lugar que use `get_permalink()`/`the_permalink()` para aquele post passa a resolver para a URL externa — inclui o botão do card (Post URL nativo), mas também `sitemap.xml`, canonical de SEO, link "Ver" no admin, RSS. Aceito conscientemente: é o comportamento desejado. A página interna do Elementor continua no banco e acessível por URL direta (a rota/rewrite não muda, só o que `get_permalink()` retorna como string), útil para edição futura, mas sem nenhum link automático apontando pra ela enquanto a LP externa estiver setada.
 Não conflita com DR-11 (removeu `_imo_cta_url`, ligado ao widget FormCTA depreciado): motivo diferente — aquele era campo de um widget específico depreciado; este é override de permalink a nível de post, sem widget acoplado, e existe justamente porque o Post URL nativo é a fonte única de link do card (Filosofia #2 — não duplicar Elementor).
+
+### DR-14: Capa do empreendimento via meta field próprio, sobrescrevendo Imagem Destacada nativa
+
+**Data:** 2026-08-07
+**Contexto:** Operador relatou que o controle nativo de Imagem Destacada ("Editar" clássico, fora do Elementor) sumiu da tela de edição do empreendimento sem nenhuma mudança feita no plugin — provável alteração de configuração do WP/Elementor (ex.: Opções de Tela) fora do controle do plugin. O Card Empreendimento no Elementor usa a Dynamic Tag nativa "Featured Image".
+**Decisão:** Criar meta field `_imo_cover_id` (ID de anexo), com upload via media picker nativo do WP (`wp.media`) num box fixo (hook `edit_form_after_title`, fora do sistema de meta boxes do WP — não aparece em "Opções de Tela", não pode ser ocultado por engano). Filtrar `post_thumbnail_id`: quando `_imo_cover_id` estiver preenchido para um `empreendimento`, `get_post_thumbnail_id()` retorna esse valor; senão, cai no comportamento nativo (`_thumbnail_id`).
+**Consequência:** Qualquer lugar que use `get_post_thumbnail_id()`/`has_post_thumbnail()`/`the_post_thumbnail()` — inclui a Dynamic Tag "Featured Image" do Elementor, Open Graph de plugins de SEO, RSS — passa a resolver pra essa imagem sem precisar reconfigurar nada no editor Elementor. Mesmo raciocínio de DR-13 (override via filtro, não substituição de widget): plugin fino, sem duplicar a lógica de exibição do Elementor, só garante a fonte do dado. Efeito colateral aceito conscientemente: se o plugin for desativado, a resolução volta a ser só `_thumbnail_id` nativo — quem só usou o campo novo perde a capa até reativar o plugin ou reatribuir a Imagem Destacada nativa.
 
 ---
 
