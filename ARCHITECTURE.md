@@ -211,7 +211,12 @@ A agência **deleta manualmente** as UFs (e outros termos) que o cliente não at
 
 **O plugin não define schema oficial de meta fields.**
 
-Meta fields pontuais usados pelos widgets auxiliares Hero e CTA:
+Meta fields **oficiais e ativos**:
+
+- `_imo_external_link` — URL de LP externa que sobrescreve o permalink do empreendimento (DR-13)
+- `_imo_cover_id` — ID de anexo que sobrescreve a Imagem Destacada do empreendimento (DR-14)
+
+Meta fields pontuais usados pelos widgets auxiliares Hero e CTA (**depreciados**, ver nota DR-11 abaixo):
 
 - `_imo_cta_label` — texto do botão CTA
 - `_imo_cta_url` — URL do botão CTA
@@ -219,7 +224,7 @@ Meta fields pontuais usados pelos widgets auxiliares Hero e CTA:
 - `_imo_subtitle` — subtítulo do hero
 - `_imo_hero_bg_id` — ID de attachment para background do hero
 
-> **Nota (DR-11):** todos os 5 meta fields listados acima estão ligados exclusivamente aos widgets Hero e FormCTA, depreciados em maio/2026. Serão removidos do código na Fase 2. Registros órfãos no banco de dados de sites existentes são inofensivos.
+> **Nota (DR-11):** os 5 meta fields `_imo_cta_*` / `_imo_*` do Hero listados acima estão ligados exclusivamente aos widgets Hero e FormCTA, depreciados em maio/2026. Serão removidos do código na Fase 2. Registros órfãos no banco de dados de sites existentes são inofensivos.
 
 Esses são **conveniências dos widgets auxiliares**, não schema de domínio. Se Hero/CTA forem removidos, os fields ficam órfãos no banco mas não quebram nada.
 
@@ -237,6 +242,8 @@ Qualquer novo meta field proposto deve passar pela pergunta da Filosofia #5 ante
 | `includes/PostType.php` | Registra CPT `empreendimento` | ativo |
 | `includes/Taxonomies.php` | Registra as 4 taxonomias | ativo |
 | `includes/Seeds.php` | População inicial de termos | ativo |
+| `includes/ExternalLink.php` | Meta `_imo_external_link` + override de permalink | ativo (DR-13) |
+| `includes/CoverImage.php` | Meta `_imo_cover_id` + override de Imagem Destacada | ativo (DR-14) |
 | `includes/Elementor/Bootstrap.php` | Init Elementor: categoria, widgets, assets | ativo |
 | `includes/Elementor/Widgets/Filters.php` | Barra de filtros para Archive | ativo — **core** |
 | `includes/Elementor/Widgets/MiniSearch.php` | Busca compacta + autocomplete | ativo |
@@ -391,6 +398,28 @@ Formato: cada decisão arquitetural relevante recebe número, data, contexto, de
 **Contexto:** Operador pediu uma forma de registrar a quantidade de lotes de cada empreendimento (loteamentos, bairros planejados) sem precisar pré-cadastrar cada número numa tela separada antes — quer digitar o valor direto na Edição Rápida, na hora, olhando a lista de empreendimentos.
 **Decisão:** Criar taxonomia `lotes`, **não-hierárquica** (`hierarchical: false`, estilo Tags), diferente das outras 4 taxonomias do plugin que são hierárquicas (estilo Categoria, checkbox). Essa escolha é proposital: taxonomias não-hierárquicas mostram um campo de texto livre na Edição Rápida, e o WordPress cria o termo automaticamente se o número digitado ainda não existir — sem precisar passar pela tela Empreendimentos → Lotes antes. Sem seed inicial. **Não é exposta como filtro** no widget Filters nem em `apply_archive_filters()` — existe só para exibição/organização administrativa, consumida no card via Post Info nativo do Elementor (Terms).
 **Consequência:** Quinta taxonomia do plugin, e a primeira não-hierárquica. Não conflita com DR-03 (que trata de meta fields para dados quantitativos como preço/metragem/vagas) porque `lotes` é implementada como taxonomia, não como meta field — segue o raciocínio de DR-01 (taxonomia > post_meta para eixos administrados via Edição Rápida), adaptado pra permitir digitação livre em vez de checkbox. Se no futuro precisar virar filtro de verdade ou faixa numérica, reavaliar como campo estruturado — essa decisão cobre só o uso administrativo/exibição atual.
+
+### DR-13: Link externo sobrescreve Post URL nativo por empreendimento
+
+**Data:** 2026-08-05
+**Contexto:** Cliente Nova Harmonia recusou usar LPs internas (construídas no próprio site via Elementor) por decisão comercial, sem motivo técnico. Passou a exigir vincular landing pages hospedadas em outros domínios para determinados empreendimentos. O botão "Veja mais" do Card Empreendimento usa Post URL nativo do Elementor, que resolve via `get_permalink()`.
+**Decisão:** Criar meta field `_imo_external_link` (URL), editável via Edição Rápida na listagem de Empreendimentos. Filtrar `post_type_link` para o CPT `empreendimento`: quando o post tiver `_imo_external_link` preenchido, `get_permalink()` retorna essa URL; senão, comportamento padrão do WordPress.
+**Consequência:** Qualquer lugar que use `get_permalink()`/`the_permalink()` para aquele post passa a resolver para a URL externa — inclui o botão do card (Post URL nativo), mas também `sitemap.xml`, canonical de SEO, link "Ver" no admin, RSS. Aceito conscientemente: é o comportamento desejado. A página interna do Elementor continua no banco e acessível por URL direta (a rota/rewrite não muda, só o que `get_permalink()` retorna como string), útil para edição futura, mas sem nenhum link automático apontando pra ela enquanto a LP externa estiver setada.
+Não conflita com DR-11 (removeu `_imo_cta_url`, ligado ao widget FormCTA depreciado): motivo diferente — aquele era campo de um widget específico depreciado; este é override de permalink a nível de post, sem widget acoplado, e existe justamente porque o Post URL nativo é a fonte única de link do card (Filosofia #2 — não duplicar Elementor).
+
+### DR-14: Capa do empreendimento via meta field próprio, sobrescrevendo Imagem Destacada nativa
+
+**Data:** 2026-08-07
+**Contexto:** Operador relatou que o controle nativo de Imagem Destacada ("Editar" clássico, fora do Elementor) sumiu da tela de edição do empreendimento sem nenhuma mudança feita no plugin — provável alteração de configuração do WP/Elementor (ex.: Opções de Tela) fora do controle do plugin. O Card Empreendimento no Elementor usa a Dynamic Tag nativa "Featured Image".
+**Decisão:** Criar meta field `_imo_cover_id` (ID de anexo), com upload via media picker nativo do WP (`wp.media`) num box fixo (hook `edit_form_after_title`, fora do sistema de meta boxes do WP — não aparece em "Opções de Tela", não pode ser ocultado por engano). Filtrar `post_thumbnail_id`: quando `_imo_cover_id` estiver preenchido para um `empreendimento`, `get_post_thumbnail_id()` retorna esse valor; senão, cai no comportamento nativo (`_thumbnail_id`).
+**Consequência:** Qualquer lugar que use `get_post_thumbnail_id()`/`has_post_thumbnail()`/`the_post_thumbnail()` — inclui a Dynamic Tag "Featured Image" do Elementor, Open Graph de plugins de SEO, RSS — passa a resolver pra essa imagem sem precisar reconfigurar nada no editor Elementor. Mesmo raciocínio de DR-13 (override via filtro, não substituição de widget): plugin fino, sem duplicar a lógica de exibição do Elementor, só garante a fonte do dado. Efeito colateral aceito conscientemente: se o plugin for desativado, a resolução volta a ser só `_thumbnail_id` nativo — quem só usou o campo novo perde a capa até reativar o plugin ou reatribuir a Imagem Destacada nativa.
+
+### DR-15: CSS mínimo para ocultar o título automático do tema no single de empreendimento
+
+**Data:** 2026-08-31
+**Contexto:** O tema ativo renderiza automaticamente o título do post (`.entry-title` ou similar) por cima/junto do conteúdo montado no Elementor na página single de cada empreendimento, duplicando visualmente o título que a agência já desenha à mão dentro do Elementor. A opção nativa "Ocultar título" do Elementor (que usa o "Page Title Selector" global de Configurações do Site → Layout) resolveria isso, mas nesse site esse seletor está configurado largo demais e oculta a página inteira junto, não só o título — bug de configuração do tema/Elementor, não do plugin. Operador pediu que a correção fique centralizada no plugin (versionada no Git, sem precisar configurar CSS manualmente em cada site novo).
+**Decisão:** Isso é, estritamente, uma decisão de layout — território do Elementor por DR-05. A exceção aceita aqui é **mínima e deliberadamente genérica**: o plugin injeta um `<style>{seletor}{display:none}</style>` no `wp_head`, só em páginas single de `empreendimento`, e só se a constante `IMOGRIFO_HIDE_TITLE_SELECTOR` (definida em `imo-grifo.php`, default `.entry-title`) não estiver vazia. O plugin fornece o mecanismo (liga/desliga, escopo restrito ao CPT); o valor do seletor é específico de cada tema/site e deve ser ajustado por quem instala o plugin num site novo — nunca fica hardcoded para um tema específico no meio do código.
+**Consequência:** Pequena e deliberada exceção a DR-05/Filosofia #1, aceita porque: (1) não desenha nada, só remove uma duplicação; (2) é opt-out por padrão (constante vazia = nada acontece); (3) não quebra o compromisso theme-agnostic — cada site ajusta a constante conforme o próprio tema, igual fariam manualmente no Custom CSS do Elementor. Se o tema mudar o seletor do título, é só atualizar essa constante — não precisa reabrir código nem mexer em Elementor.
 
 ---
 

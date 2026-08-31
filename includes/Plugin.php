@@ -87,6 +87,20 @@ final class Plugin
 
         // Filtros para Elementor Loop Grid com Query ID "imo_archive"
         add_action('elementor/query/imo_archive', [$this, 'apply_loop_grid_filters'], 10, 2);
+
+        // Oculta o título automático do tema no single de empreendimento (DR-15)
+        add_action('wp_head', [__CLASS__, 'maybe_hide_theme_title']);
+    }
+
+    // ----------------- Título automático do tema (DR-15) -----------------
+    public static function maybe_hide_theme_title(): void
+    {
+        if (! is_singular('empreendimento')) { return; }
+
+        $selector = defined('IMOGRIFO_HIDE_TITLE_SELECTOR') ? IMOGRIFO_HIDE_TITLE_SELECTOR : '';
+        if ($selector === '') { return; }
+
+        printf('<style>%s{display:none}</style>', $selector);
     }
 
     // ----------------- Autoloader -----------------
