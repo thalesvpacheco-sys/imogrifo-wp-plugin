@@ -106,7 +106,11 @@ final class Plugin
         $selector = defined('IMOGRIFO_HIDE_TITLE_SELECTOR') ? IMOGRIFO_HIDE_TITLE_SELECTOR : '';
         if ($selector === '') { return; }
 
-        printf('<style>%s{display:none}</style>', $selector);
+        // data-no-optimize="1" impede plugins de cache (ex.: LiteSpeed UCSS)
+        // de combinar/remover essa regra por achar que "não é usada" — ela só
+        // faz display:none, então otimizadores automáticos de CSS não-usado
+        // podem descartá-la por engano.
+        printf('<style data-no-optimize="1">%s{display:none !important}</style>', $selector);
     }
 
     // ----------------- Autoloader -----------------

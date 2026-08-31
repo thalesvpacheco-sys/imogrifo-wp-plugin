@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Imo Grifo
  * Description: CPT Empreendimentos + Taxonomias + Widgets/Tags Elementor (sem Editar IMO).
- * Version: 0.3.8
+ * Version: 0.3.9
  * Author: Grifo Agency
  * Text Domain: imo-grifo
  */
@@ -13,7 +13,7 @@ if (! defined('ABSPATH')) { exit; }
 if (! defined('IMOGRIFO_FILE')) { define('IMOGRIFO_FILE', __FILE__); }
 if (! defined('IMOGRIFO_PATH')) { define('IMOGRIFO_PATH', plugin_dir_path(__FILE__)); }
 if (! defined('IMOGRIFO_URL'))  { define('IMOGRIFO_URL',  plugin_dir_url(__FILE__)); }
-if (! defined('IMOGRIFO_VER'))  { define('IMOGRIFO_VER',  '0.3.8'); }
+if (! defined('IMOGRIFO_VER'))  { define('IMOGRIFO_VER',  '0.3.9'); }
 
 // Seletor CSS do título automático do tema a ocultar nas páginas de empreendimento
 // (DR-15). Vazio = desativado. Ajuste aqui se o tema mudar e a classe for outra.
