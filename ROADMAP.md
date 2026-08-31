@@ -335,6 +335,53 @@ Essa parte fazemos juntos no terminal antes de ligar o Claude Code em qualquer t
 
 ---
 
+### F2-06 — Link externo por empreendimento (override de Post URL)
+
+**Problema:** Nova Harmonia recusou LPs internas, precisa linkar LPs externas por empreendimento. Sem mecanismo hoje pra isso.
+
+**Ação:**
+- Criar `includes/ExternalLink.php` (namespace `ImoGrifo`) com meta field `_imo_external_link` (URL) para o CPT `empreendimento`
+- Filtrar `post_type_link`: quando preenchido, `get_permalink()` retorna a URL externa
+- Coluna "Link (LP externa)" na listagem + campo na Edição Rápida (com nonce e `esc_url_raw`)
+- Bootar a classe em `Plugin.php`
+
+**Critério de pronto:**
+- Coluna "Link (LP externa)" aparece na listagem de Empreendimentos
+- Campo URL aparece na Edição Rápida, populado corretamente com o valor atual ao abrir
+- Salvar via Edição Rápida persiste em `_imo_external_link`, sanitizado com `esc_url_raw`
+- Botão "Veja mais" do card (Post URL nativo) abre a URL externa quando preenchida
+- Empreendimento sem link preenchido continua abrindo a página interna normalmente
+- Acessar a URL interna diretamente (digitando) continua funcionando, sem 404/redirect
+- Nenhum PHP warning/notice novo no log
+- Testar em harmonia.grifo.agency com pelo menos 1 empreendimento com link e 1 sem
+
+**Referências:** DR-13
+
+---
+
+### F2-07 — Capa do empreendimento independente do editor nativo
+
+**Problema:** Controle nativo de Imagem Destacada sumiu da tela de edição sem mudança no plugin (provável config do WP/Elementor fora do nosso controle). Card usa Dynamic Tag "Featured Image" do Elementor — precisa de uma fonte de imagem que o plugin controle e garanta visível.
+
+**Ação:**
+- Criar `includes/CoverImage.php` (namespace `ImoGrifo`) com meta field `_imo_cover_id` (ID de anexo) para o CPT `empreendimento`
+- Box de upload fixo na tela Editar (hook `edit_form_after_title`, fora do sistema de meta boxes — não pode ser ocultado via Opções de Tela), usando o media picker nativo do WP
+- Filtrar `post_thumbnail_id`: quando preenchido, `get_post_thumbnail_id()`/`has_post_thumbnail()`/`the_post_thumbnail()` retornam essa imagem
+- Bootar a classe em `Plugin.php`
+
+**Critério de pronto:**
+- Box "Capa do Empreendimento" aparece fixo na tela Editar do empreendimento (fora do sistema de meta boxes — não pode ser ocultado via Opções de Tela)
+- Selecionar imagem via media picker nativo do WP salva em `_imo_cover_id`
+- Remover imagem limpa o campo
+- Com `_imo_cover_id` preenchido, o card no Elementor (Dynamic Tag Featured Image) exibe essa imagem automaticamente, sem reconfigurar o widget
+- Empreendimento sem `_imo_cover_id` continua funcionando com a Imagem Destacada nativa, se houver
+- Nenhum PHP warning/notice novo no log
+- Testar em harmonia.grifo.agency com pelo menos 1 empreendimento novo (via capa) e 1 empreendimento antigo (via Imagem Destacada nativa, sem capa nova)
+
+**Referências:** DR-14
+
+---
+
 ## Fase 3 — Polimento e preparação para distribuição
 
 **Objetivo:** deixar o plugin num estado apresentável — documentação, screenshots, i18n completo. Preparar (sem obrigação de executar) para eventual publicação no WordPress.org.
@@ -447,7 +494,7 @@ Uma fase só é considerada **concluída** quando todas as issues dela têm crit
 |---|---|---|---|
 | Pré-req | Setup Git | 4 checkboxes | 🟡 Em aberto |
 | Fase 1 | Estabilização | F1-01 a F1-10 (10 issues) | ✅ Concluída |
-| Fase 2 | Filters personalizável | F2-01 a F2-05 (5 issues) | 🟡 Pronta para começar |
+| Fase 2 | Filters personalizável | F2-01 a F2-07 (7 issues) | 🟡 Pronta para começar |
 | Fase 3 | Polimento | F3-01 a F3-05 (5 issues) | ⏸️ Aguardando Fase 2 |
 | Fase 4 | Backlog futuro | — | 📋 Vazio por design |
 
